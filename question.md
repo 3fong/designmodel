@@ -41,6 +41,55 @@ java.util.concurrent 并发包提供了 AtomicInteger 这样一个原子类，�
 迪米特法则:从对外关系出发.    
 
 
+### logger类是否应该依赖注入,static final并且内部创建是否影响可测试性?
+
+依赖注入可提高可测试的原因是,它可以轻松替换依赖的真实对象.我们mock数据的原因是业务逻辑存在不可控的情形.但是logger只写不读,同时不参与业务逻辑处理,所以不需要进行mock测试;
+
+
+### ??? 只要把对象 new 操作和初始化操作设计为原子操作，就自然能禁止重排序
+
+单例模式中指令重排序造成的线程不安全问题
+
+```
+
+public class IdGenerator { 
+  private AtomicLong id = new AtomicLong(0);
+  private static IdGenerator instance;
+  private IdGenerator() {}
+  public static IdGenerator getInstance() {
+    if (instance == null) {
+      synchronized(IdGenerator.class) { // 此处为类级别的锁
+        if (instance == null) {
+          instance = new IdGenerator();
+        }
+      }
+    }
+    return instance;
+  }
+  public long getId() { 
+    return id.incrementAndGet();
+  }
+}
+```
+
+### 单例如何支持多实例
+
+```
+Singleton singleton1 = Singleton.getInstance(10, 50);
+Singleton singleton2 = Singleton.getInstance(20, 30);
+```
+单例支持多实例的核心是创建多个单例:    
+初始化是将可支持单例放入到一个容器中,例如map,这样就可以获取多实例了
+
+
+
+
+
+
+
+
+
+
 
 
 
