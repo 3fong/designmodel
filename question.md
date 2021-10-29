@@ -82,7 +82,11 @@ Singleton singleton2 = Singleton.getInstance(20, 30);
 初始化是将可支持单例放入到一个容器中,例如map,这样就可以获取多实例了
 
 
+#### 问题spring事务,数据库事务管理能否基于单一接口解决分布式事务问题?
+场景:
 
+跨表
+跨库
 
 
 
