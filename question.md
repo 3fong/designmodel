@@ -89,11 +89,20 @@ Singleton singleton2 = Singleton.getInstance(20, 30);
 跨库
 
 
+#### 数组查询如何进行优化
+
+```
+for (CharacterStyle style : styles) {
+    if (style.equals(newStyle)) {
+      return style;
+    }
+  }
+```
+
+将数组的线性遍历改成hash方式.O(1)
 
 
-
-
-
+#### 如何测试垃圾回收
 
 
 
