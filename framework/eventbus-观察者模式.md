@@ -36,15 +36,17 @@ EventBus的一个特定是不需要结构化的观察方法声明,而是通过�
 
 Subscribe是一个注解，用于标明观察者中的哪个函数可以接收消息。
 
+```
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
 @Beta
 public @interface Subscribe {}
-
+```
 2.ObserverAction
 
 ObserverAction类用来表示@Subscribe注解的方法，其中，target表示观察者类，method表示方法。它主要用在ObserverRegistry观察者注册表中。
 
+```
 public class ObserverAction {
   private Object target;
   private Method method;
@@ -63,6 +65,7 @@ public class ObserverAction {
     }
   }
 }
+```
 
 3.ObserverRegistry
 
@@ -70,6 +73,7 @@ ObserverRegistry类就是前面讲到的Observer注册表，是最复杂的一�
 
 CopyOnWriteArraySet，顾名思义，在写入数据的时候，会创建一个新的set，并且将原始数据clone到新的set中，在新的set中写入数据完成之后，再用新的set替换老的set。这样就能保证在写入数据的时候，不影响数据的读取操作，以此来解决读写并发问题。除此之外，CopyOnWriteSet还通过加锁的方式，避免了并发写冲突。具体的作用你可以去查看一下CopyOnWriteSet类的源码，一目了然。
 
+```
 public class ObserverRegistry {
   private ConcurrentMap<Class<?>, CopyOnWriteArraySet<ObserverAction>> registry = new ConcurrentHashMap<>();
 
@@ -129,11 +133,13 @@ public class ObserverRegistry {
     return annotatedMethods;
   }
 }
+```
 
 4.EventBus
 
 EventBus实现的是阻塞同步的观察者模式。看代码你可能会有些疑问，这明明就用到了线程池Executor啊。实际上，MoreExecutors.directExecutor()是Google Guava提供的工具类，看似是多线程，实际上是单线程。之所以要这么实现，主要还是为了跟AsyncEventBus统一代码逻辑，做到代码复用。
 
+```
 public class EventBus {
   private Executor executor;
   private ObserverRegistry registry = new ObserverRegistry();
@@ -162,13 +168,16 @@ public class EventBus {
     }
   }
 }
+```
 
 5.AsyncEventBus
 
 有了EventBus，AsyncEventBus的实现就非常简单了。为了实现异步非阻塞的观察者模式，它就不能再继续使用MoreExecutors.directExecutor()了，而是需要在构造函数中，由调用者注入线程池。
 
+```
 public class AsyncEventBus extends EventBus {
   public AsyncEventBus(Executor executor) {
     super(executor);
   }
 }
+```
