@@ -105,5 +105,8 @@ for (CharacterStyle style : styles) {
 #### 如何测试垃圾回收
 
 
+#### hystrix中如何使用的命令模式
+
+
 
 
